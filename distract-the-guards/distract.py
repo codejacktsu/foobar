@@ -13,10 +13,13 @@ def timer(func):
 
 
 @timer
-def printer(msg):
-    return print(msg)
+def solution(n):
+    if n < 2:
+        return 1
+    else:
+        return solution(n-1) + solution(n-2)
 
 
 # running
-msg = "test"
-printer(msg)
+n = 100
+print(solution(n))
