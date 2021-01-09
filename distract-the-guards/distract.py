@@ -21,5 +21,5 @@ def solution(n):
 
 
 # running
-n = 100
+n = 10
 print(solution(n))
