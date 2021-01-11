@@ -5,6 +5,7 @@ from math import gcd
 
 def timer(func):
     """decorator: prints process runtime"""
+
     def wrapper(*args, **kwargs):
         start_time = time.perf_counter()
         result = func(*args, **kwargs)
@@ -51,6 +52,10 @@ def create_graph(lst):
                 g[i].connect(j)
                 g[j].connect(i)
 
+    for i in range(len(lst)):
+        for j in g[i].match:
+            g[i].weight += g[j].length
+
     g['order'] = sorted(g.keys(), key=lambda x: g[x].weight)
 
     for i in range(len(lst)):
@@ -64,6 +69,7 @@ class Node:
         self.pos = i
         self.value = value
         self.match = []
+        self.length = 0
         self.weight = 0
 
     def connect(self, j):
@@ -71,26 +77,24 @@ class Node:
         :param j: position of matching node"""
 
         self.match.append(j)
-        self.weight = len(self.match)
+        self.length = len(self.match)
 
     def sortbyweight(self, order):
         self.match.sort(key=lambda i: order.index(i)) # Python 3/2
 
 
-def matching(g, lst):
+def matching(g):
     """ match nodes starting with lowest weight to highest """
 
     guard = 0
     while g['order']:
         dq = g['order'].pop(0)
         if g[dq].weight:
-            print(dq, "main")
             for i in g[dq].match:
                 if i in g['order']:
                     g['order'].remove(i)
-                    print(i, "match")
                     break
-                print(dq, "guard")
+                # if cycle through match list, no hits, then guard += 1
         else:
             guard += 1
     return guard
@@ -119,7 +123,8 @@ def simple_form(pair):
 
 # running
 lst = [1, 7, 3, 21, 13, 19]
+# lst = [1, 1]
 # print(solution(n))
-# print(create_graph(lst)[4].match)
+# print(create_graph(lst)[0].match)
 g = create_graph(lst)
-print(matching(g, lst))
+print(matching(g))
