@@ -51,10 +51,10 @@ def create_graph(lst):
                 g[i].connect(j)
                 g[j].connect(i)
 
-    weight_order = sorted(g.keys(), key=lambda x: g[x].weight)
+    g['order'] = sorted(g.keys(), key=lambda x: g[x].weight)
 
     for i in range(len(lst)):
-        g[i].sortbyweight(weight_order)
+        g[i].sortbyweight(g['order'])
 
     return g
 
@@ -77,9 +77,23 @@ class Node:
         self.match.sort(key=lambda i: order.index(i)) # Python 3/2
 
 
-def matching(g):
+def matching(g, lst):
     """ match nodes starting with lowest weight to highest """
-    pass
+
+    guard = 0
+    while g['order']:
+        dq = g['order'].pop(0)
+        if g[dq].weight:
+            print(dq, "main")
+            for i in g[dq].match:
+                if i in g['order']:
+                    g['order'].remove(i)
+                    print(i, "match")
+                    break
+                print(dq, "guard")
+        else:
+            guard += 1
+    return guard
 
 
 def infinite_check(pair):
@@ -106,4 +120,6 @@ def simple_form(pair):
 # running
 lst = [1, 7, 3, 21, 13, 19]
 # print(solution(n))
-print(create_graph(lst)[4].match)
+# print(create_graph(lst)[4].match)
+g = create_graph(lst)
+print(matching(g, lst))
