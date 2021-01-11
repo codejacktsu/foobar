@@ -2,6 +2,7 @@ import time
 # from fractions import gcd
 from math import gcd
 
+
 def timer(func):
     """decorator: prints process runtime"""
     def wrapper(*args, **kwargs):
@@ -39,13 +40,22 @@ def solution(n):
 
 
 def create_graph(lst):
-    """ create graph of nodes connecting possible infinite loops
+    """ create graph of nodes connecting to all infinite loops inducing nodes
     :param lst: list of bananas
     :return g: generated graph"""
 
     g = {i: Node(i, value) for i, value in enumerate(lst)}
-    for i in range(lst):
-        for j in range(i, )
+    for i in range(len(lst)-1):
+        for j in range(i + 1, len(lst)):
+            if infinite_check([g[i].value, g[j].value]):
+                g[i].connect(j)
+                g[j].connect(i)
+
+    weight_order = sorted(g.keys(), key=lambda x: g[x].weight)
+
+    for i in range(len(lst)):
+        g[i].sortbyweight(weight_order)
+
     return g
 
 
@@ -54,15 +64,22 @@ class Node:
         self.pos = i
         self.value = value
         self.match = []
+        self.weight = 0
+
+    def connect(self, j):
+        """ connect matching nodes
+        :param j: position of matching node"""
+
+        self.match.append(j)
         self.weight = len(self.match)
 
-    def find_match(self):
+    def sortbyweight(self, order):
+        self.match.sort(key=lambda i: order.index(i)) # Python 3/2
 
 
-
-# class Graph:
-#     def __init__(self, lst):
-#         self.length = len(lst)
+def matching(g):
+    """ match nodes starting with lowest weight to highest """
+    pass
 
 
 def infinite_check(pair):
@@ -88,7 +105,5 @@ def simple_form(pair):
 
 # running
 lst = [1, 7, 3, 21, 13, 19]
-pair = [3, 4]
 # print(solution(n))
-# print(infinite_check(pair))
-print(create_graph(lst)[1].weight)
+print(create_graph(lst)[4].match)
