@@ -32,14 +32,6 @@ class Memoize:
         return value
 
 
-@timer
-def solution(n):
-    if n < 2:
-        return 1
-    else:
-        return solution(n-1) + solution(n-2)
-
-
 def create_graph(lst):
     """ create graph of nodes connecting to all infinite loops inducing nodes
     :param lst: list of bananas
@@ -89,14 +81,14 @@ def matching(g):
     guard = 0
     while g['order']:
         dq = g['order'].pop(0)
+        temp_guard = 1
         if g[dq].weight:
             for i in g[dq].match:
                 if i in g['order']:
                     g['order'].remove(i)
+                    temp_guard = 0
                     break
-                # if cycle through match list, no hits, then guard += 1
-        else:
-            guard += 1
+        guard += temp_guard
     return guard
 
 
@@ -120,11 +112,13 @@ def simple_form(pair):
     pair[1] = pair[1] // d
     return pair
 
+@timer
+def solution(lst):
+    g = create_graph(lst)
+    return matching(g)
+
 
 # running
 lst = [1, 7, 3, 21, 13, 19]
 # lst = [1, 1]
-# print(solution(n))
-# print(create_graph(lst)[0].match)
-g = create_graph(lst)
-print(matching(g))
+print(solution(lst))

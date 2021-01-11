@@ -11,3 +11,6 @@ class MyTestCase(unittest.TestCase):
         value = [1, 7, 3, 21, 13, 19]
         self.assertEqual(distract.solution(value), 0)
 
+    def test_3(self):
+        value = [1, 7, 3, 21, 13, 19, 19]
+        self.assertEqual(distract.solution(value), 1)
