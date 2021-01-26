@@ -5,12 +5,12 @@ from util import timer, Memoize
 
 def solution(times, time_limit):
     graph = [bellman_ford(times, layer) for layer, _ in enumerate(times)]
-    flag = neg_cycle_check(graph, time_limit)
+    flag = neg_cycle_check(graph, times, time_limit)
 
     if len(times) <= 2:
         return []
     elif flag:
-        return list(range(1, len(times)-1))
+        return list(range(len(times)-2))
 
     return graph, flag
 
@@ -40,12 +40,15 @@ def bellman_ford(cost, origin):
     return graph
 
 
-def neg_cycle_check(graph, time_limit):
+def neg_cycle_check(graph, times, time_limit):
     """ check for negative cycle """
 
-    for i in range(len(graph)):
-        if graph[i][i] < 0 and graph[0][i] <= time_limit:
-            return True
+    n = len(graph)
+    for i in range(n):
+        for j in range(n):
+            for z in range(n):
+                if graph[i][z] > graph[i][j] + times[j][z] and graph[0][j] < time_limit:
+                    return True
     return False
 
 
@@ -56,7 +59,7 @@ def neg_cycle_check(graph, time_limit):
 #          [1, 1, 1, 1, 0]]
 # time_limit = 3
 
-times = [[-1, 2, 2, 2, -1],
+times = [[0, 2, 2, 2, -1],
          [9, 0, 2, 2, -1],
          [9, 3, 0, 2, -1],
          [9, 3, 2, 0, -1],
