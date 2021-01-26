@@ -4,10 +4,19 @@ from util import timer, Memoize
 #brute force
 
 def solution(times, time_limit):
-    return [bellman_ford(times, layer) for layer, _ in enumerate(times)]
+    graph = [bellman_ford(times, layer) for layer, _ in enumerate(times)]
+    flag = neg_cycle_check(graph, time_limit)
+
+    if len(times) <= 2:
+        return []
+    elif flag:
+        return list(range(1, len(times)-1))
+
+    return graph, flag
 
 def bellman_ford(cost, origin):
-    """ Use Bellman-Ford algorithm to find shortest path"""
+    """ Use Bellman-Ford algorithm to find shortest path
+    check for negative cycle"""
 
     graph = []
     for i in range(len(cost)):
@@ -31,6 +40,15 @@ def bellman_ford(cost, origin):
     return graph
 
 
+def neg_cycle_check(graph, time_limit):
+    """ check for negative cycle """
+
+    for i in range(len(graph)):
+        if graph[i][i] < 0 and graph[0][i] <= time_limit:
+            return True
+    return False
+
+
 # times = [[0, 1, 1, 1, 1],
 #          [1, 0, 1, 1, 1],
 #          [1, 1, 0, 1, 1],
@@ -38,12 +56,13 @@ def bellman_ford(cost, origin):
 #          [1, 1, 1, 1, 0]]
 # time_limit = 3
 
-times = [[0, 2, 2, 2, -1],
+times = [[-1, 2, 2, 2, -1],
          [9, 0, 2, 2, -1],
          [9, 3, 0, 2, -1],
          [9, 3, 2, 0, -1],
          [9, 3, 2, 2, 0]]
 time_limit = 1
+
 
 print(solution(times, time_limit))
 # print(bellman_ford(times, 0))
